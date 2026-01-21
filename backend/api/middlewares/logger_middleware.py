@@ -7,9 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 # Example: replace this with your custom logger
 # from app.logging import logger
-import logging
-
-logger = logging.getLogger("api_logger")
+from backend.utils.logging import logger
 
 
 class LoggerMiddleware(BaseHTTPMiddleware):
@@ -38,19 +36,19 @@ class LoggerMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
         except Exception as exc:
-            duration = round(time.perf_counter() - start_time, 4)
+            duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
             logger.exception(
                 "Request failed",
                 extra={
                     "method": method,
                     "url": url,
-                    "duration_seconds": duration,
+                    "duration_ms": duration_ms,
                 },
             )
             raise exc
 
-        duration = round(time.perf_counter() - start_time, 4)
+        duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
         logger.info(
             "Outgoing response",
@@ -58,7 +56,7 @@ class LoggerMiddleware(BaseHTTPMiddleware):
                 "method": method,
                 "url": url,
                 "status_code": response.status_code,
-                "duration_seconds": duration,
+                "duration_ms": duration_ms,
             },
         )
 

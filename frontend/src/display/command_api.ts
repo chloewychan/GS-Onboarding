@@ -12,6 +12,21 @@ export const getCommands = async (): Promise<CommandListResponse> => {
   }
 }
 
+export const deleteCommand = async (
+  id: number
+): Promise<CommandListResponse> => {
+  try {
+    const { data } = await axios.delete<CommandListResponse>(
+      `${API_URL}/commands/${id}`
+    );
+    return data;
+  } catch (error) {
+    console.error(`Error deleting command with id ${id}:`, error);
+    throw error;
+  }
+};
+
+
 /**
  * TODO: (Member) Create a deleteCommand API function based on the following specs. You should be using axios to make the API call
  *
